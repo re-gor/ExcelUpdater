@@ -28,7 +28,7 @@ namespace Spsl.ExcelUpdater
 
             try
             {
-                ExcelHandler.ExternalDataUpdater.UpdateSharepointFile(result.Value.FileName);
+                ExcelHandler.ExternalDataUpdater.UpdateSharepointFiles(@"https://portal.spsl.sbras.ru/to", "Документы");
             }
             catch (Exception ex)
             {

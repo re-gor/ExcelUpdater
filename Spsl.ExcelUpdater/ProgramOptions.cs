@@ -14,5 +14,8 @@ namespace Spsl.ExcelUpdater
         [Option('f', "FileName", DefaultValue = @"https://portal.spsl.sbras.ru/to/Shared documents/Тест/FooTable.xlsx", HelpText = "Name of file which will be updated")]//, Required = true)]
         public string FileName { get; set; }
 
+        [Option('s', "SiteUrl", DefaultValue = @"https://portal.spsl.sbras.ru/to/", HelpText = "Name of file which will be updated")]//, Required = true)]
+        public string SiteUrl { get; set; }
+
     }
 }
