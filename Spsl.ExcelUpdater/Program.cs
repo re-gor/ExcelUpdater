@@ -24,11 +24,9 @@ namespace Spsl.ExcelUpdater
                 return;
             }
 
-            Console.WriteLine("Working file name: {0}", result.Value.FileName);
-
             try
             {
-                ExcelHandler.ExternalDataUpdater.UpdateSharepointFiles(@"https://portal.spsl.sbras.ru/to", "Документы");
+                ExcelHandler.ExternalDataUpdater.UpdateSharepointFiles(result.Value.SiteUrl, result.Value.LibraryName, result.Value.SubFolder);
             }
             catch (Exception ex)
             {

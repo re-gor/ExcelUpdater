@@ -15,9 +15,9 @@ namespace ExcelHandler
     public static class ExternalDataUpdater
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(ExternalDataUpdater));
-        public static void UpdateSharepointFiles(string siteUrl, string libraryName)
+        public static void UpdateSharepointFiles(string siteUrl, string libraryName, string subFolder = null)
         {
-            UpdateSharepointFiles(_getSharepointPaths(siteUrl, libraryName));
+            UpdateSharepointFiles(_getSharepointPaths(siteUrl, libraryName, subFolder));
         }
 
         public static void UpdateSharepointFiles(IEnumerable<string> excelSharepointFilePaths)
@@ -143,7 +143,7 @@ namespace ExcelHandler
             }
         }
 
-        private static List<string> _getSharepointPaths (string siteUrl, string libraryName)
+        private static List<string> _getSharepointPaths (string siteUrl, string libraryName, string subFolder = null)
         {
 
             ClientContext context = new ClientContext(siteUrl);
@@ -153,8 +153,18 @@ namespace ExcelHandler
 
             List xlsList = site.Lists.GetByTitle(libraryName);
             CamlQuery caml = new CamlQuery();
-            caml.ViewXml = "<View Scope=\"Recursive\"><Query><Where><Eq><FieldRef Name=\"File_x0020_Type\"/><Value Type=\"Text\">xlsx</Value></Eq></Where></Query></View>";
-
+            caml.ViewXml = "<View Scope=\"Recursive\"><Query><Where>";
+            if (subFolder != null)
+            {
+                caml.ViewXml += "<And>";
+            }
+            caml.ViewXml += "<Eq><FieldRef Name=\"File_x0020_Type\"/><Value Type=\"Text\">xlsx</Value></Eq>";
+            if (subFolder != null)
+            {
+                caml.ViewXml += "<Contains><FieldRef Name=\"FileDirRef\"/><Value Type=\"Text\">" + subFolder + "</Value></Contains>";
+                caml.ViewXml += "</And>";
+            }
+            caml.ViewXml += "</Where></Query></View>";
             context.Load(xlsList);
             context.ExecuteQuery();
             var listItemCol = xlsList.GetItems(caml);
@@ -180,8 +190,6 @@ namespace ExcelHandler
                 }
 
             }
-
-            //var foo = listItemCol.Select(item => item["FileRef"].ToString()).AsEnumerable();
             return result;
             
         }
