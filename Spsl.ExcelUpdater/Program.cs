@@ -24,7 +24,17 @@ namespace Spsl.ExcelUpdater
                 return;
             }
 
-            Console.WriteLine(result.Value.FileName);
+            Console.WriteLine("Working file name: {0}", result.Value.FileName);
+
+            try
+            {
+                ExcelHandler.ExternalDataUpdater.UpdateSharepointFile(result.Value.FileName);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+                return;
+            }
         }
     }
 }
