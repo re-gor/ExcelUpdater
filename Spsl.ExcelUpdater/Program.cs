@@ -1,4 +1,6 @@
-﻿using System;
+﻿using log4net;
+using log4net.Config;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,21 @@ namespace Spsl.ExcelUpdater
 {
     class Program
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(Program));
+
         static void Main(string[] args)
         {
+            var result = CommandLine.Parser.Default.ParseArguments<ProgramOptions>(args);
+            if (result.Errors.Any())
+            {
+                foreach(var error in result.Errors)
+                {
+                    _log.ErrorFormat("Can not start program: {0}", error.Tag);
+                }
+                return;
+            }
+
+            Console.WriteLine(result.Value.FileName);
         }
     }
 }
