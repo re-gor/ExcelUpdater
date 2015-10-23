@@ -27,9 +27,9 @@ namespace ExcelHandler
             {
 
                 excelApp = new Excel.Application();
-                _log.InfoFormat("Start of update process. Excel app initializated. {0} files to fetch:\n", 
+                _log.InfoFormat("Start of update process. Excel app initializated. {0} files to fetch:\r\n{1}", 
                     excelSharepointFilePaths.Count(),
-                    string.Join("\n",excelSharepointFilePaths));
+                    string.Join("\r\n", excelSharepointFilePaths));
 
                 foreach(string path in excelSharepointFilePaths)
                 {
