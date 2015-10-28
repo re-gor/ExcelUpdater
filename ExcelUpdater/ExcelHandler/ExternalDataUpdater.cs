@@ -30,9 +30,9 @@ namespace ExcelHandler
         /// <param name="siteUrl">Url of site, where library is located</param>
         /// <param name="libraryName">Name of library ("Shared documents", for example)</param>
         /// <param name="subFolder">Specific subfolder in library. Function will add "Contains" operator in caml query</param>
-        public static void UpdateSharepointFiles(string siteUrl, string libraryName, string subFolder = null)
+        public static void UpdateSharepointFiles(string siteUrl, string libraryName, string subFolder = null, bool excelVisible = false)
         {
-            UpdateSharepointFiles(_getSharepointPaths(siteUrl, libraryName, subFolder));
+            UpdateSharepointFiles(_getSharepointPaths(siteUrl, libraryName, subFolder), excelVisible);
             Task.WaitAll(_deleteTasks.ToArray());
         }
 
@@ -40,7 +40,7 @@ namespace ExcelHandler
         /// Updating of set of files. 
         /// </summary>
         /// <param name="excelSharepointFilePaths"></param>
-        public static void UpdateSharepointFiles(IEnumerable<string> excelSharepointFilePaths)
+        public static void UpdateSharepointFiles(IEnumerable<string> excelSharepointFilePaths, bool excelVisible = false)
         {
             Excel.Application excelApp = null;
             try
@@ -48,6 +48,7 @@ namespace ExcelHandler
 
                 excelApp = new Excel.Application();
                 excelApp.DisplayAlerts = false;
+                excelApp.Visible = excelVisible;
 
                 _log.InfoFormat("Start of update process. Excel app initializated. {0} files to fetch:\r\n{1}", 
                     excelSharepointFilePaths.Count(),
@@ -93,19 +94,20 @@ namespace ExcelHandler
             string excelLocalWorkBookName = null;
             try
             {
-                excelApp.Visible = false;
                 Excel.Workbook excelWorkbook = excelApp.Workbooks.Open(excelSharepointFilePath,
                     0, false, 5, "", "", true, Excel.XlPlatform.xlWindows, "",
                     true, false, 0, true, false, false);
-
-                excelWorkbook.RefreshAll();
-                System.Threading.Thread.Sleep(_waitUpdateTimeout);
 
                 excelLocalWorkBookName = "temp_" + excelWorkbook.Name;
 
                 string path = Path.Combine(Directory.GetCurrentDirectory(), excelLocalWorkBookName);
                 excelWorkbook.SaveAs(path, ConflictResolution: Excel.XlSaveConflictResolution.xlLocalSessionChanges);
-                
+
+                excelWorkbook.RefreshAll();
+                System.Threading.Thread.Sleep(_waitUpdateTimeout);
+
+                excelWorkbook.Save();
+
                 excelWorkbook.Close(true);
                 _publishWorkbook(path, excelSharepointFilePath);
             }

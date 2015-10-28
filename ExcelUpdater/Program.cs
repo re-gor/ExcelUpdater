@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Spsl.ExcelUpdater
+namespace ExcelUpdater
 {
     class Program
     {
@@ -17,7 +17,10 @@ namespace Spsl.ExcelUpdater
             var result = CommandLine.Parser.Default.ParseArguments<ProgramOptions>(args);
             if (result.Errors.Any())
             {
-                foreach(var error in result.Errors)
+                if (result.Errors.First().Tag == CommandLine.ErrorType.HelpRequestedError)
+                    return;
+
+                foreach (var error in result.Errors)
                 {
                     _log.ErrorFormat("Can not start program: {0}", error.Tag);
                 }

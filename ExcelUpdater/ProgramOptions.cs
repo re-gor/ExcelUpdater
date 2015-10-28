@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Spsl.ExcelUpdater
+namespace ExcelUpdater
 {
     class ProgramOptions
     {
@@ -16,7 +16,10 @@ namespace Spsl.ExcelUpdater
         [Option('l', "LibraryName", DefaultValue = @"Документы", HelpText = "Library where excel files located")]//, Required = true)]
         public string LibraryName { get; set; }
 
-        [Option('f', "FolderName", DefaultValue = null, HelpText = "Folder in library where excel files located")]//, Required = true)]
+        [Option('f', "FolderName", DefaultValue = @"TestUpdating", HelpText = "Folder in library where excel files located")]//, Required = true)]
         public string SubFolder { get; set; }
+
+        [Option('v', "ExcelVisible", DefaultValue = false, HelpText = "Show excel instance during updating of files (usefull for configuring connections of PowerQuery)")]
+        public bool ExcelVisible { get; set; }
     }
 }
